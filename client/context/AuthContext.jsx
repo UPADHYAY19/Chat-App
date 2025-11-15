@@ -6,6 +6,7 @@ import { io } from "socket.io-client";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 axios.defaults.baseURL = backendUrl;
+axios.defaults.withCredentials = true; // ⭐ REQUIRED
 
 export const AuthContext = createContext();
 
@@ -113,7 +114,7 @@ export const AuthContextProvider = ({ children }) => {
     setSocket(newSocket);
 
     newSocket.on("getOnlineUser", (userIds) => {
-      setOnlineUsers(userIds);
+      setOnlineUsers(userIds.map((id) => id.toString())); // ⭐ VERY IMPORTANT
     });
   };
 
@@ -124,6 +125,7 @@ export const AuthContextProvider = ({ children }) => {
     login,
     logout,
     updateProfile,
+    axios, // ⭐ ADD THIS
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
